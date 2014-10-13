@@ -59,15 +59,7 @@ bool DownloadManager::saveToDisk(const QString &filename, QIODevice *data) {
     return true;
 }
 
-/*
-void DownloadManager::execute() {
-    foreach (QString url, urls) {
-        doDownload(url);
-    }
-}*/
-
 void DownloadManager::perform() {
-    //QEventLoop qel;
     foreach (QString url, urls) {
         doDownload(url);
     }
