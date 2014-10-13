@@ -30,7 +30,6 @@ public:
     void perform();
     bool saveToDisk(const QString &filename, QIODevice *data);
     bool save_file = false;
-    //bool is_done = false;
     QString saveFileName(const QUrl &url);
     QByteArray rand_user_agent();
     QEventLoop qel;
