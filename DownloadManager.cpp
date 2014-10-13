@@ -3,7 +3,6 @@
 class QSslError;
 QT_USE_NAMESPACE
 
-
 DownloadManager::DownloadManager() {
     connect(&manager, SIGNAL(finished(QNetworkReply*)),
             SLOT(downloadFinished(QNetworkReply*)));
