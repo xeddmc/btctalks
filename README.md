@@ -1,6 +1,6 @@
 BTCtalks
 ========
-* C++
+* Qt C++
 * [BTCtalk.org](http://bitcointalk.org) forum mining class
 * DownloadManager class
 * TO DO:
