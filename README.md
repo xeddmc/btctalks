@@ -8,4 +8,4 @@ BTCtalks
     - Download and parse massively data (many URLs from the same constructor).
     - Merge data fetching method with the parsing.
     - Targeted intelligent parsing for data mining (thread crawling).
-    - Add more data sources.
+    - Add more data sources (mining classes).
