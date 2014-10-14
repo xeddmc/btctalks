@@ -1,4 +1,3 @@
-#include <QCoreApplication>
 #include <btctalks.h>
 
 int main(int argc, char *argv[])
