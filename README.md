@@ -7,5 +7,6 @@ BTCtalks
 * __TO DO:__
     - ~~Download and parse massively data (many URLs from the same constructor).~~
     - ~~Merge data fetching method with the parsing.~~
+    - Crawling.
     - Targeted intelligent parsing for data mining (thread crawling).
     - Add more data sources (mining classes).
