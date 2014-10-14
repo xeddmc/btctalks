@@ -20,9 +20,11 @@ class BTCtalks {
 
 public:
     BTCtalks(QString url);
+    BTCtalks(QStringList URLs);
     QString current_date;
     QString base_url;
-    QString get_data();
+    QStringList urls;
+    QList<BTCtalks_topic> get_parsed_data();
     QList<BTCtalks_topic> data_parser(QString data);
 };
 
