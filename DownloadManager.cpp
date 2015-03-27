@@ -61,11 +61,11 @@ bool DownloadManager::saveToDisk(const QString &filename, QIODevice *data) {
 }
 
 void DownloadManager::perform() {
-    foreach (QString url, urls) {
+    foreach (QString url, urls)
         doDownload(url);
-    }
     qel.exec();
 }
+
 void DownloadManager::sslErrors(const QList<QSslError> &sslErrors)
 {
 #ifndef QT_NO_OPENSSL
@@ -81,22 +81,21 @@ void DownloadManager::downloadFinished(QNetworkReply *reply)
         fprintf(stderr, "Download of %s failed: %s\n",
                 url.toEncoded().constData(),
                 qPrintable(reply->errorString()));
+    }
+    // Handling redirection.
+    if(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 301) {
+        doDownload(reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl());
     } else {
         if(save_file){
             QString filename = saveFileName(url);
             if (saveToDisk(filename, reply))
-            printf("Download of %s succeeded (saved to %s).\n",
-                   url.toEncoded().constData(), qPrintable(filename));
-            data_all.push_back(reply->readAll());
+                printf("Download of %s succeeded (saved to %s).\n",
+                       url.toEncoded().constData(), qPrintable(filename));
         } else {
             printf("Download of %s succeeded.\n", url.toEncoded().constData());
-            data_all.push_back(reply->readAll());
         }
+        data_all.push_back(reply->readAll());
     }
-
-    // Handling redirection.
-    if(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 301)
-        doDownload(reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl());
 
     currentDownloads.removeAll(reply);
     reply->deleteLater();

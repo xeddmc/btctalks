@@ -1,23 +1,44 @@
 #include "btctalks.h"
 #include "DownloadManager.h"
 
+// Single URL constructor.
 BTCtalks::BTCtalks(QString url) {
     base_url = url;
 }
 
-// Downloading the data from the URL.
-QString BTCtalks::get_data() {
-    //std::auto_ptr<DownloadManager> mgr(new DownloadManager());
-    DownloadManager mgr;
-    mgr.add_url(base_url);
-    mgr.perform();
-    return mgr.data_all.back();
+// Constructor for multiple URLs.
+BTCtalks::BTCtalks(QStringList URLs){
+    foreach(QString url, URLs)
+        urls.push_back(url);
+}
+
+// Downloading the data from the URL(s) and parsing them.
+QList<BTCtalks_topic> BTCtalks::get_parsed_data() {
+    if(urls.isEmpty()) {
+        DownloadManager mgr;
+        mgr.add_url(base_url);
+        mgr.perform();
+        return data_parser(mgr.data_all.back());
+    } else {
+        DownloadManager mgr;
+        foreach(QString url, urls)
+            mgr.add_url(url);
+        mgr.perform();
+        QList<BTCtalks_topic> ret_var;
+        for(QList<QString>::iterator it = mgr.data_all.begin(); it != mgr.data_all.end(); ++it) {
+            QList<BTCtalks_topic> tmp = data_parser(*it);
+            for(QList<BTCtalks_topic>::iterator it_2 = tmp.begin(); it_2 != tmp.end(); ++it_2)
+                ret_var.push_back(*it_2);
+        }
+        return ret_var;
+    }
 }
 
 // Parsing the data received from the URL.
 QList<BTCtalks_topic> BTCtalks::data_parser(QString data){
-    // Generating the list to return in the end and making ourselves comfortable.
+    // Generating the list to return.
     QList<BTCtalks_topic> topics;
+    // Replace for parsing quote.
     data = data.replace("\"", "^");
 
     // A fix for the date parsing.
@@ -29,18 +50,22 @@ QList<BTCtalks_topic> BTCtalks::data_parser(QString data){
     int index_link = data.indexOf("<span id=^") + QString("<span id=^msg_3133700^><a href=^").length();
 
     // Getting the current date.
+    QString tmp;
     for(;;){
+        if(!current_date.isEmpty())
+            break;
         QString check_var, closer("</span>");
         for(int fill(0); fill < closer.length(); ++fill)
             check_var += data.at(index_date + fill);
         if(check_var == closer) {
             // Got current date, synchronizing index with thread name one for future parsing (skipping junk).
-            qDebug() << "Got current date:" << current_date;
+            current_date.append(tmp);
+         // qDebug() << "Got current date:" << current_date;
             index_date = data.indexOf("<span class=^smalltext^>", index_date) + QString("<span class=^smalltext^>").length();
             index_date = data.indexOf("<span class=^smalltext^>", index_date) + QString("<span class=^smalltext^>").length();
             break;
         } else {
-            current_date += data.at(index_date);
+            tmp += data.at(index_date);
             ++index_date;
         }
     }
